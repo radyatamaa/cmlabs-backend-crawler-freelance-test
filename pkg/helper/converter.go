@@ -3,15 +3,25 @@ package helper
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 	"time"
 )
 
 const (
-	DateTimeFormatDefault = "2006-01-02 15:04:05"
-	DateFormatDefault = "2006-01-02"
+	DateTimeFormatDefault         = "2006-01-02 15:04:05"
+	DateFormatDefault             = "2006-01-02"
 	DateTimeFormatDefaultWithZone = "2006-01-02T15:04:05Z"
 )
 
+func GetFileNameFromUrl(url string) string {
+	fileName := strings.Split(url, "/")
+
+	if len(fileName) >= 0 {
+		url = fileName[len(fileName)-1]
+	}
+
+	return url
+}
 
 func FloatToString(inputNum float64) string {
 	// to convert a float number to a string
@@ -235,7 +245,7 @@ func StringToDateTimeNullable(value string) time.Time {
 
 	return time.Time{}
 }
-func StringToDateWithFormat(value string,format string) time.Time {
+func StringToDateWithFormat(value string, format string) time.Time {
 	if value != "" {
 		var layoutFormat string
 		var date time.Time
@@ -280,6 +290,3 @@ func ConvertIntBool(value *int) bool {
 	}
 	return false
 }
-
-
-

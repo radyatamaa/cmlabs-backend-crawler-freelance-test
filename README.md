@@ -1,4 +1,4 @@
-# technical-test-cognotiv
+# cmlabs-backend-crawler-freelance-test
 
 
 ### Clean Architecture
@@ -25,16 +25,10 @@ cd $GOPATH/src/github.com/radyatamaa
 git clone https://github.com/radyatama/cmlabs-backend-crawler-freelance-test.git
 
 #move to project
-cd technical-test-cognotiv
+cd cmlabs-backend-crawler-freelance-test
 
 # Run app 
 go run main.go
-
-# Run worker
-go run ./cmd/worker/main.go
-
-# if you not installed yet redis and mysql
-docker compose -f "docker-compose.yml" up -d --build
 
 # Open at browser this url
 http://localhost:8082/swagger/index.html
@@ -44,6 +38,3 @@ http://localhost:8082/swagger/index.html
 ### Swagger UI:
 
 http://localhost:8082/swagger/index.html
-
-### More about app details:
-open file tutorial test apps.pdf

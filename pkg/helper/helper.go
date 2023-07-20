@@ -17,6 +17,16 @@ func ItemExists(arrayType interface{}, item interface{}) bool {
 	return false
 }
 
+func ItemExistsIndex(arrayType interface{}, item interface{}) (bool, int) {
+	arr := reflect.ValueOf(arrayType)
+	for i := 0; i < arr.Len(); i++ {
+		if arr.Index(i).Interface() == item {
+			return true, i
+		}
+	}
+	return false, 0
+}
+
 // GetLangVersion sets site language version.
 func GetLangVersion(ctx *beegoContext.Context) string {
 	// 1. Check URL arguments.

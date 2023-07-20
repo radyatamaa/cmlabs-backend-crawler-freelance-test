@@ -11,6 +11,22 @@ import (
 
 func registerCustomEnglishTranslator(v *validatorGo.Validate, trans ut.Translator) {
 
+	if err := v.RegisterTranslation("URL", trans, func(ut ut.Translator) error {
+		if err := ut.Add("URL", "{0} must be a valid URL", false); err != nil {
+			return err
+		}
+		return nil
+	}, func(ut ut.Translator, fe validatorGo.FieldError) string {
+		t, err := ut.T(fe.Tag(), fe.Field(), fe.Param())
+		if err != nil {
+			log.Printf("warning: error translating FieldError: %#v", fe)
+			return fe.(error).Error()
+		}
+		return t
+	}); err != nil {
+		panic(err)
+	}
+
 	if err := v.RegisterTranslation("rfe", trans, func(ut ut.Translator) error {
 		if err := ut.Add("rfe", "{0} is required if {1} = {2}", false); err != nil {
 			return err

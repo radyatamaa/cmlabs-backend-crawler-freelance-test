@@ -116,8 +116,18 @@ func registerCustomValidation(db *gorm.DB, v *validatorGo.Validate) {
 	}); err != nil {
 		panic(err)
 	}
+	if err := v.RegisterValidation("URL", ValidateURL); err != nil {
+		panic(err)
+	}
 }
 
+func ValidateURL(fl validatorGo.FieldLevel) bool {
+	if fl.Field().String() != "" {
+		regex := regexp.MustCompile(`https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)`)
+		return regex.MatchString(fl.Field().String())
+	}
+	return true
+}
 func ValidateDateOnly(fl validatorGo.FieldLevel) bool {
 	if fl.Field().String() != "" {
 		regex := regexp.MustCompile(`^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$`)

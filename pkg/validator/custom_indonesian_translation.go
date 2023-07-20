@@ -11,6 +11,22 @@ import (
 
 func registerCustomIndonesianTranslator(v *validatorGo.Validate, trans ut.Translator) {
 
+	if err := v.RegisterTranslation("URL", trans, func(ut ut.Translator) error {
+		if err := ut.Add("URL", "{0} harus berupa URL yang valid", false); err != nil {
+			return err
+		}
+		return nil
+	}, func(ut ut.Translator, fe validatorGo.FieldError) string {
+		t, err := ut.T(fe.Tag(), fe.Field(), fe.Param())
+		if err != nil {
+			log.Printf("warning: error translating FieldError: %#v", fe)
+			return fe.(error).Error()
+		}
+		return t
+	}); err != nil {
+		panic(err)
+	}
+
 	if err := v.RegisterTranslation("rfe", trans, func(ut ut.Translator) error {
 		if err := ut.Add("rfe", "{0} wajib diisi jika {1} = {2}", false); err != nil {
 			return err

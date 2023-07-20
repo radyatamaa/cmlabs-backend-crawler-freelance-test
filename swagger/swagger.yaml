@@ -1,175 +1,40 @@
 basePath: /api
 definitions:
-  domain.CompletedOrderResponse:
+  domain.CrawlRequest:
     properties:
-      customer_name:
-        type: string
-      order_id:
-        type: integer
-      products_ordered:
-        items:
-          $ref: '#/definitions/domain.QueryOrderDetail'
-        type: array
-      status:
-        type: string
-      total_price:
-        type: number
-    type: object
-  domain.CreateOrderRequest:
-    properties:
-      product_id:
-        items:
-          type: integer
-        type: array
-    required:
-    - product_id
-    type: object
-  domain.CreateOrderResponse:
-    properties:
-      customer_name:
-        type: string
-      order_id:
-        type: integer
-      products_ordered:
-        items:
-          $ref: '#/definitions/domain.ProductsDto'
-        type: array
-      status:
-        type: string
-      total_price:
-        type: number
-    type: object
-  domain.ExportCSVResponse:
-    properties:
-      url:
-        type: string
-    type: object
-  domain.GetOrdersPaginationResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/domain.GetOrdersResponse'
-        type: array
-      paginator:
-        $ref: '#/definitions/paginator.MetaPaginatorResponse'
-    type: object
-  domain.GetOrdersResponse:
-    properties:
-      customer_name:
-        type: string
-      order_id:
-        type: integer
-      products_ordered:
-        items:
-          $ref: '#/definitions/domain.QueryOrderDetail'
-        type: array
-      status:
-        type: string
-      total_price:
-        type: number
-    type: object
-  domain.GetProductsPaginationResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/domain.GetProductsResponse'
-        type: array
-      paginator:
-        $ref: '#/definitions/paginator.MetaPaginatorResponse'
-    type: object
-  domain.GetProductsResponse:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-    type: object
-  domain.ProductsDto:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-    type: object
-  domain.QueryOrderDetail:
-    properties:
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-      updated_at:
-        type: string
-    type: object
-  domain.UserLogin:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  domain.UserLoginRequest:
-    properties:
-      email:
-        type: string
-      password:
+      web_url:
         type: string
     required:
-    - email
-    - password
+    - web_url
     type: object
-  domain.UserLoginResponse:
+  domain.CrawlResponse:
     properties:
-      expired_at:
-        type: string
-      token:
-        type: string
-      user:
-        $ref: '#/definitions/domain.UserLogin'
-    type: object
-  paginator.MetaPaginatorResponse:
-    properties:
-      back_page:
-        type: integer
-      current_page:
-        type: integer
-      default_page_size:
-        type: integer
-      label_pages:
-        type: string
-      limit_per_page:
-        type: integer
-      next_page:
-        type: integer
-      page_sizes:
+      h_tags:
         items:
-          type: integer
+          $ref: '#/definitions/domain.HTags'
         type: array
-      total_pages:
-        type: integer
-      total_records:
-        type: integer
+      meta_content:
+        $ref: '#/definitions/domain.MetaContent'
+      source_code_html_url:
+        type: string
+    type: object
+  domain.HTags:
+    properties:
+      list:
+        items:
+          type: string
+        type: array
+      tags:
+        type: string
+    type: object
+  domain.MetaContent:
+    properties:
+      meta_description:
+        type: string
+      meta_keywords:
+        type: string
+      meta_title:
+        type: string
     type: object
   swagger.BadRequestErrorValidationResponse:
     properties:
@@ -257,7 +122,7 @@ info:
   title: Api Gateway V1
   version: v1
 paths:
-  /v1/auth/login/admin:
+  /v1/crawl/web:
     post:
       parameters:
       - description: lang
@@ -269,7 +134,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/domain.UserLoginRequest'
+          $ref: '#/definitions/domain.CrawlRequest'
       produces:
       - application/json
       responses:
@@ -280,7 +145,7 @@ paths:
             - $ref: '#/definitions/swagger.BaseResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/domain.UserLoginResponse'
+                  $ref: '#/definitions/domain.CrawlResponse'
                 errors:
                   items:
                     type: object
@@ -325,439 +190,9 @@ paths:
                     type: object
                   type: array
               type: object
-      summary: LoginAdmin
+      summary: CrawlWeb
       tags:
-      - Auth
-  /v1/auth/login/customer:
-    post:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      - description: request payload
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/domain.UserLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.UserLoginResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      summary: LoginCustomer
-      tags:
-      - Auth
-  /v1/order:
-    get:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      - description: page size
-        in: query
-        name: pageSize
-        type: integer
-      - description: page
-        in: query
-        name: page
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.GetOrdersPaginationResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: GetOrders
-      tags:
-      - Order
-    post:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      - description: request payload
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/domain.CreateOrderRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.CreateOrderResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: CreateOrder
-      tags:
-      - Order
-  /v1/order/completed/{order_id}:
-    get:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      - description: order_id
-        in: path
-        name: order_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.CompletedOrderResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: CompletedOrder
-      tags:
-      - Order
-  /v1/order/export:
-    get:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.ExportCSVResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: ExportCSV
-      tags:
-      - Order
-  /v1/product:
-    get:
-      parameters:
-      - description: lang
-        in: header
-        name: Accept-Language
-        type: string
-      - description: page size
-        in: query
-        name: pageSize
-        type: integer
-      - description: page
-        in: query
-        name: page
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BaseResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/domain.GetProductsPaginationResponse'
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    $ref: '#/definitions/swagger.ValidationErrors'
-                  type: array
-              type: object
-        "408":
-          description: Request Timeout
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  items:
-                    type: object
-                  type: array
-              type: object
-      summary: GetProducts
-      tags:
-      - Product
+      - Crawl
 securityDefinitions:
   ApiKeyAuth:
     in: header
