@@ -1,0 +1,766 @@
+basePath: /api
+definitions:
+  domain.CompletedOrderResponse:
+    properties:
+      customer_name:
+        type: string
+      order_id:
+        type: integer
+      products_ordered:
+        items:
+          $ref: '#/definitions/domain.QueryOrderDetail'
+        type: array
+      status:
+        type: string
+      total_price:
+        type: number
+    type: object
+  domain.CreateOrderRequest:
+    properties:
+      product_id:
+        items:
+          type: integer
+        type: array
+    required:
+    - product_id
+    type: object
+  domain.CreateOrderResponse:
+    properties:
+      customer_name:
+        type: string
+      order_id:
+        type: integer
+      products_ordered:
+        items:
+          $ref: '#/definitions/domain.ProductsDto'
+        type: array
+      status:
+        type: string
+      total_price:
+        type: number
+    type: object
+  domain.ExportCSVResponse:
+    properties:
+      url:
+        type: string
+    type: object
+  domain.GetOrdersPaginationResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.GetOrdersResponse'
+        type: array
+      paginator:
+        $ref: '#/definitions/paginator.MetaPaginatorResponse'
+    type: object
+  domain.GetOrdersResponse:
+    properties:
+      customer_name:
+        type: string
+      order_id:
+        type: integer
+      products_ordered:
+        items:
+          $ref: '#/definitions/domain.QueryOrderDetail'
+        type: array
+      status:
+        type: string
+      total_price:
+        type: number
+    type: object
+  domain.GetProductsPaginationResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.GetProductsResponse'
+        type: array
+      paginator:
+        $ref: '#/definitions/paginator.MetaPaginatorResponse'
+    type: object
+  domain.GetProductsResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  domain.ProductsDto:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  domain.QueryOrderDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  domain.UserLogin:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  domain.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.UserLoginResponse:
+    properties:
+      expired_at:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/domain.UserLogin'
+    type: object
+  paginator.MetaPaginatorResponse:
+    properties:
+      back_page:
+        type: integer
+      current_page:
+        type: integer
+      default_page_size:
+        type: integer
+      label_pages:
+        type: string
+      limit_per_page:
+        type: integer
+      next_page:
+        type: integer
+      page_sizes:
+        items:
+          type: integer
+        type: array
+      total_pages:
+        type: integer
+      total_records:
+        type: integer
+    type: object
+  swagger.BadRequestErrorValidationResponse:
+    properties:
+      code:
+        example: KDMU-02-006
+        type: string
+      data: {}
+      errors: {}
+      message:
+        example: permintaan tidak valid, kesalahan muncul ketika permintaan Anda memiliki
+          parameter yang tidak valid.
+        type: string
+      request_id:
+        example: 24fa3770-628c-49de-aa17-3a338f73d99b
+        type: string
+      timestamp:
+        example: "2022-04-27 23:19:56"
+        type: string
+    type: object
+  swagger.BaseResponse:
+    properties:
+      code:
+        example: OK
+        type: string
+      data: {}
+      errors: {}
+      message:
+        example: operasi berhasil dieksekusi.
+        type: string
+      request_id:
+        example: 24fa3770-628c-49de-aa17-3a338f73d99b
+        type: string
+      timestamp:
+        example: "2022-04-27 23:19:56"
+        type: string
+    type: object
+  swagger.InternalServerErrorResponse:
+    properties:
+      code:
+        example: KDMU-02-008
+        type: string
+      data: {}
+      errors: {}
+      message:
+        example: terjadi kesalahan, silakan hubungi administrator.
+        type: string
+      request_id:
+        example: 24fa3770-628c-49de-aa17-3a338f73d99b
+        type: string
+      timestamp:
+        example: "2022-04-27 23:19:56"
+        type: string
+    type: object
+  swagger.RequestTimeoutResponse:
+    properties:
+      code:
+        example: KDMU-02-009
+        type: string
+      data: {}
+      errors: {}
+      message:
+        example: permintaan telah melampaui batas waktu, harap request kembali.
+        type: string
+      request_id:
+        example: 24fa3770-628c-49de-aa17-3a338f73d99b
+        type: string
+      timestamp:
+        example: "2022-04-27 23:19:56"
+        type: string
+    type: object
+  swagger.ValidationErrors:
+    properties:
+      field:
+        example: MobilePhone wajib diisi.
+        type: string
+      message:
+        example: ActiveDate harus format yang benar yyyy-mm-dd.
+        type: string
+    type: object
+info:
+  contact:
+    email: mohradyatama24@gmail.com
+    name: radyatama
+  description: api "API Gateway v1"
+  title: Api Gateway V1
+  version: v1
+paths:
+  /v1/auth/login/admin:
+    post:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: request payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.UserLoginResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      summary: LoginAdmin
+      tags:
+      - Auth
+  /v1/auth/login/customer:
+    post:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: request payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.UserLoginResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      summary: LoginCustomer
+      tags:
+      - Auth
+  /v1/order:
+    get:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.GetOrdersPaginationResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: GetOrders
+      tags:
+      - Order
+    post:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: request payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.CreateOrderResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: CreateOrder
+      tags:
+      - Order
+  /v1/order/completed/{order_id}:
+    get:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.CompletedOrderResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: CompletedOrder
+      tags:
+      - Order
+  /v1/order/export:
+    get:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.ExportCSVResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: ExportCSV
+      tags:
+      - Order
+  /v1/product:
+    get:
+      parameters:
+      - description: lang
+        in: header
+        name: Accept-Language
+        type: string
+      - description: page size
+        in: query
+        name: pageSize
+        type: integer
+      - description: page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.GetProductsPaginationResponse'
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.BadRequestErrorValidationResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    $ref: '#/definitions/swagger.ValidationErrors'
+                  type: array
+              type: object
+        "408":
+          description: Request Timeout
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.RequestTimeoutResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      summary: GetProducts
+      tags:
+      - Product
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
