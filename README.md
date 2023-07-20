@@ -22,7 +22,7 @@ The explanation about this project's structure  can read from this medium's post
 cd $GOPATH/src/github.com/radyatamaa
 
 # Clone into YOUR $GOPATH/src
-git clone https://github.com/radyatama/cmlabs-backend-crawler-freelance-test.git
+git clone https://github.com/radyatamaa/cmlabs-backend-crawler-freelance-test.git
 
 #move to project
 cd cmlabs-backend-crawler-freelance-test
